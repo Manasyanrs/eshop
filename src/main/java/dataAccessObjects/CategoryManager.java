@@ -8,11 +8,9 @@ import java.util.Scanner;
 
 public class CategoryManager {
     private final Connection CONNECTION = DBConnectionProvider.getINSTANCE().getConnection();
-    private final Scanner SCANNER = new Scanner(System.in);
 
-
-    public void addCategory() {
-        Category category = createCategory();
+    public void addCategory(Scanner scanner) {
+        Category category = createCategory(scanner);
         boolean categoryNameDB = isCategoryNameDB(category.getName());
         if (!categoryNameDB) {
             String sql = "insert into category(name) values(?)";
@@ -32,12 +30,12 @@ public class CategoryManager {
         }
     }
 
-    public void editCategoryById() {
+    public void editCategoryById(Scanner scanner) {
         System.out.print("Please input category id: ");
-        String categoryId = SCANNER.nextLine();
+        String categoryId = scanner.nextLine();
         if (isCategoryId(Integer.parseInt(categoryId))) {
             System.out.print("Please input new name for changed category. ");
-            String editName = SCANNER.nextLine();
+            String editName = scanner.nextLine();
             String sql = "update category set name=? where id=" + categoryId;
 
             try (PreparedStatement preparedStatement = CONNECTION.prepareStatement(sql)) {
@@ -51,9 +49,9 @@ public class CategoryManager {
         }
     }
 
-    public void deleteCategoryById() {
+    public void deleteCategoryById(Scanner scanner) {
         System.out.print("Please input category id: ");
-        String deleteCategoryId = SCANNER.nextLine();
+        String deleteCategoryId = scanner.nextLine();
         if (isCategoryId(Integer.parseInt(deleteCategoryId))) {
             String sql = "delete from category where id=" + deleteCategoryId;
 
@@ -154,11 +152,11 @@ public class CategoryManager {
         }
     }
 
-    private Category createCategory() {
+    private Category createCategory(Scanner scanner) {
         Category category = new Category();
 
         System.out.print("Please input category name: ");
-        String categoryName = SCANNER.nextLine();
+        String categoryName = scanner.nextLine();
         category.setName(categoryName);
         return category;
     }

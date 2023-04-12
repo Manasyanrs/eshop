@@ -10,31 +10,30 @@ import java.util.Scanner;
 
 public class ProductManager implements EditProductCommands {
     private final Connection CONNECTION = DBConnectionProvider.getINSTANCE().getConnection();
-    private final Scanner SCANNER = new Scanner(System.in);
     private final CategoryManager CATEGORY = new CategoryManager();
 
-    private Product createProduct() {
+    private Product createProduct(Scanner scanner) {
         System.out.print("Please input product name: ");
-        String name = SCANNER.nextLine();
+        String name = scanner.nextLine();
 
         System.out.print("Please input product description: ");
-        String description = SCANNER.nextLine();
+        String description = scanner.nextLine();
 
         System.out.print("Please input product price: ");
-        double price = Double.parseDouble(SCANNER.nextLine());
+        double price = Double.parseDouble(scanner.nextLine());
 
         System.out.print("Please input product quantity: ");
-        int quantity = Integer.parseInt(SCANNER.nextLine());
+        int quantity = Integer.parseInt(scanner.nextLine());
 
         System.out.print("Please input product category: ");
-        String categoryName = SCANNER.nextLine();
+        String categoryName = scanner.nextLine();
 
         int categoryId = CATEGORY.returnCategoryIdByName(categoryName);
         return new Product(name, description, price, quantity, categoryId);
     }
 
-    public void addProduct() {
-        Product product = createProduct();
+    public void addProduct(Scanner scanner) {
+        Product product = createProduct(scanner);
         String sql = "insert into products(name, description, price, quantity, category) " + "values(?,?,?,?,?)";
         try (PreparedStatement preparedStatement = CONNECTION.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, product.getName());
@@ -53,22 +52,22 @@ public class ProductManager implements EditProductCommands {
         }
     }
 
-    public void editProductById() {
+    public void editProductById(Scanner scanner) {
         showProducts();
         System.out.print("Please input product id: ");
-        String productId = SCANNER.nextLine();
+        String productId = scanner.nextLine();
         if (isProductId(Integer.parseInt(productId))) {
-            editProductCommands(Integer.parseInt(productId));
+            editProductCommands(Integer.parseInt(productId), scanner);
 
         } else {
             System.out.println("Product by id " + productId + " does not exist.");
         }
     }
 
-    public void deleteProductById() {
+    public void deleteProductById(Scanner scanner) {
         showProducts();
         System.out.print("Please input product id: ");
-        String deleteProductId = SCANNER.nextLine();
+        String deleteProductId = scanner.nextLine();
         if (isProductId(Integer.parseInt(deleteProductId))) {
             String sql = "delete from products where id=" + deleteProductId;
 
@@ -156,9 +155,9 @@ public class ProductManager implements EditProductCommands {
         }
     }
 
-    private void changeProductName(int id) {
+    private void changeProductName(int id, Scanner scanner) {
         System.out.print("Please input new name for changed product. ");
-        String editName = SCANNER.nextLine();
+        String editName = scanner.nextLine();
         String sql = "update products set name=? where id=" + id;
 
         try (PreparedStatement preparedStatement = CONNECTION.prepareStatement(sql)) {
@@ -169,9 +168,9 @@ public class ProductManager implements EditProductCommands {
         }
     }
 
-    private void changeProductDescription(int id) {
+    private void changeProductDescription(int id, Scanner scanner) {
         System.out.print("Please input new description for changed product. ");
-        String editDescription = SCANNER.nextLine();
+        String editDescription = scanner.nextLine();
         String sql = "update products set description=? where id=" + id;
 
         try (PreparedStatement preparedStatement = CONNECTION.prepareStatement(sql)) {
@@ -182,9 +181,9 @@ public class ProductManager implements EditProductCommands {
         }
     }
 
-    private void changeProductPrice(int id) {
+    private void changeProductPrice(int id, Scanner scanner) {
         System.out.print("Please input new price for changed product. ");
-        String editPrice = SCANNER.nextLine();
+        String editPrice = scanner.nextLine();
         String sql = "update products set price=? where id=" + id;
 
         try (PreparedStatement preparedStatement = CONNECTION.prepareStatement(sql)) {
@@ -195,9 +194,9 @@ public class ProductManager implements EditProductCommands {
         }
     }
 
-    private void changeProductCategory(int id) {
+    private void changeProductCategory(int id, Scanner scanner) {
         System.out.print("Please input category name for chang product category id. ");
-        String editCategoryName = SCANNER.nextLine();
+        String editCategoryName = scanner.nextLine();
         if (CATEGORY.isCategoryNameDB(editCategoryName.strip())) {
             int categoryId = CATEGORY.returnCategoryIdByName(editCategoryName.trim());
 
@@ -212,9 +211,9 @@ public class ProductManager implements EditProductCommands {
         }
     }
 
-    private void changeProductQuantity(int id) {
+    private void changeProductQuantity(int id, Scanner scanner) {
         System.out.print("Please input new quantity for changed product. ");
-        String editQuantity = SCANNER.nextLine();
+        String editQuantity = scanner.nextLine();
         String sql = "update products set quantity=? where id=" + id;
 
         try (PreparedStatement preparedStatement = CONNECTION.prepareStatement(sql)) {
@@ -240,30 +239,30 @@ public class ProductManager implements EditProductCommands {
         return false;
     }
 
-    private void editProductCommands(int id) {
+    private void editProductCommands(int id, Scanner scanner) {
         boolean flag = true;
 
         while (flag) {
             EditProductCommands.printCommands();
-            String editProduct = SCANNER.nextLine();
+            String editProduct = scanner.nextLine();
             switch (editProduct) {
                 case EXIT:
                     flag = false;
                     break;
                 case CHANGE_PRODUCT_NAME:
-                    changeProductName(id);
+                    changeProductName(id, scanner);
                     break;
                 case CHANGE_PRODUCT_DESCRIPTION:
-                    changeProductDescription(id);
+                    changeProductDescription(id, scanner);
                     break;
                 case CHANGE_PRODUCT_PRICE:
-                    changeProductPrice(id);
+                    changeProductPrice(id, scanner);
                     break;
                 case CHANGE_PRODUCT_QUANTITY:
-                    changeProductQuantity(id);
+                    changeProductQuantity(id, scanner);
                     break;
                 case CHANGE_PRODUCT_CATEGORY:
-                    changeProductCategory(id);
+                    changeProductCategory(id, scanner);
                     break;
                 default:
                     System.out.println("Please choose the correct team:");

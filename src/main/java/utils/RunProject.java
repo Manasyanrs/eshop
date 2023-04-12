@@ -26,22 +26,22 @@ public class RunProject implements Commands {
                     flag = false;
                     break;
                 case ADD_CATEGORY:
-                    CATEGORY_MANAGER.addCategory();
+                    CATEGORY_MANAGER.addCategory(SCANNER);
                     break;
                 case EDIT_CATEGORY_BY_ID:
-                    CATEGORY_MANAGER.editCategoryById();
+                    CATEGORY_MANAGER.editCategoryById(SCANNER);
                     break;
                 case DELETE_CATEGORY_BY_ID:
-                    CATEGORY_MANAGER.deleteCategoryById();
+                    CATEGORY_MANAGER.deleteCategoryById(SCANNER);
                     break;
                 case ADD_PRODUCT:
-                    PRODUCT_MANAGER.addProduct();
+                    PRODUCT_MANAGER.addProduct(SCANNER);
                     break;
                 case EDIT_PRODUCT_BY_ID:
-                    PRODUCT_MANAGER.editProductById();
+                    PRODUCT_MANAGER.editProductById(SCANNER);
                     break;
                 case DELETE_PRODUCT_BY_ID:
-                    PRODUCT_MANAGER.deleteProductById();
+                    PRODUCT_MANAGER.deleteProductById(SCANNER);
                     break;
                 case PRINT_TOTAL_PRODUCTS_COUNT:
                     PRODUCT_MANAGER.printTotalProductsCount();
